@@ -1,0 +1,54 @@
+"GPEDI.pedOUT" <- function(
+                          data
+						  ){
+			file = data
+			target=file[,1]
+			target = na.omit(target)
+			coi=matrix(NA,length(target),3)
+			for(m in 1:length(target))
+				{
+				 target0=target[m]
+				 j=0
+				 E=target0
+				 while(!all(is.na(E)))
+					{
+					 search.result=file[file[,1]%in%E,]
+					 j=j+1 
+					 E=c(search.result[,3],search.result[,4])#
+						E = unique(E)
+						}
+					 coi[m,1]=target0 
+					 
+					 coi[m,3]=j 
+				}
+				g = max(coi[,3])
+				file_1 = file[,-2]
+				file_1 = na.omit(file_1)
+				son = file_1$ID
+				son=unique(son)
+				parents = c(file_1$sire,file_1$dam)
+				parents=unique(parents)
+				born_son = length(son)/length(parents)
+				parents_1 = c(file_1$dam,file_1$sire)
+				parents_1 = na.omit(parents_1)
+				parents_1_1 = table(parents_1)
+				A = max(parents_1_1)
+				parents_1_1 = as.matrix(parents_1_1)
+                C = sum(parents_1_1[,1])			
+				D = length(parents_1_1)
+				B = C/D
+				B = round(B, 1)
+				gender = file$gender
+				sire = sum(gender=="0")
+				dam = sum(gender=="1")
+				unknow = sum(gender=="NA")
+				information=matrix(NA,6,1)
+				rownames(information)=c("maxbirths","Avebirths","sire","dam","unknowgender","generations")
+				information[1,1] = A
+				information[2,1] = B
+				information[3,1] = sire
+				information[4,1] = dam
+				information[5,1] = unknow
+				information[6,1] = g
+				return(information)
+				}
